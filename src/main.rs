@@ -1,6 +1,8 @@
 use ahash::AHashMap;
 use sha2::{Digest, Sha512};
-use std::{env::args, fs::File, io::Read, os::unix::fs::MetadataExt, time::Instant};
+use std::{
+    borrow::Borrow, env::args, fs::File, io::Read, os::unix::fs::MetadataExt, time::Instant,
+};
 use walkdir::WalkDir;
 
 fn main() {
@@ -15,7 +17,7 @@ fn main() {
 
     println!("{}", args[1]);
 
-    let walk_dir: WalkDir = WalkDir::new(args[1].clone()).follow_links(true);
+    let walk_dir = WalkDir::new(args[1].clone()).follow_links(true);
 
     // Riempimento vettore di checksum/
     for file in walk_dir.into_iter().flatten() {
@@ -23,7 +25,7 @@ fn main() {
         if file.path().exists() && file.path().is_file() && file.metadata().unwrap().size() > 0 {
             let file_open = File::open(file.path());
             if file_open.is_ok() {
-                let data: &mut Vec<u8> = &mut Vec::<u8>::new();
+                let data = &mut Vec::<u8>::new();
                 let read_result = file_open.unwrap().read_to_end(data);
                 if read_result.is_ok() {
                     let mut hasher = Sha512::new();
@@ -38,9 +40,5 @@ fn main() {
         }
     }
 
-    let now = Instant::now();
-    for elemento in hashmap {
-        println!("{} {}", elemento.0, elemento.1);
-    }
-    println!("{}", now.elapsed().as_millis());
+    // Aggiungere parte di controllo duplicati
 }
