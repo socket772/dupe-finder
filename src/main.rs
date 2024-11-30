@@ -38,7 +38,7 @@ fn main() {
     }
 
     // lista di tutti i file in una cartella ()
-    let walk_dir = WalkDir::new(args[1].clone()).follow_links(true);
+    let walk_dir = WalkDir::new(args[1].clone()).follow_links(false);
 
     // crea file di log
     let mut file_writer = OpenOptions::new()
@@ -72,7 +72,7 @@ fn main() {
         }
     }
 
-    println!("Numero file validi trovati{}", contatore);
+    println!("Numero file validi trovati {}", contatore);
 
     // Controllo dei duplicati
     let mut benchmark = Instant::now();
@@ -92,6 +92,8 @@ fn main() {
         }
     }
     println!("Cerca duplicati: {}ns", benchmark.elapsed().as_nanos());
+
+    println!("Numero istanze di duplicazione {}", hashmap_final.len());
 
     benchmark = Instant::now();
     // Deduplicazione elementi nell'array dei file
